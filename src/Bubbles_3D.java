@@ -6,8 +6,10 @@ import com.comsol.model.*;
 import com.comsol.model.util.*;
 
 /** Model exported on Mar 31 2022, 16:16 by COMSOL 6.0.0.312. */
-public class Bubbles_3D {
-
+public class $name {
+	
+	$what
+	
   public static Model run() {
 	// Create the model
     Model model = ModelUtil.create("Model");
@@ -51,10 +53,13 @@ public class Bubbles_3D {
     model.component("comp1").geom("geom1").create("blk1", "Block");
     model.component("comp1").geom("geom1").feature("blk1").label("Channel");
     model.component("comp1").geom("geom1").feature("blk1").set("size", new String[]{"width", "depth", "height"});
-    model.component("comp1").geom("geom1").create("blk2", "Block");
-    model.component("comp1").geom("geom1").feature("blk2").label("Detector");
-    model.component("comp1").geom("geom1").feature("blk2").set("pos", new String[]{"x_det", "0", "0"});
-    model.component("comp1").geom("geom1").feature("blk2").set("size", new String[]{"0.01", "depth", "height"});
+    //model.component("comp1").geom("geom1").create("blk2", "Block");
+    //model.component("comp1").geom("geom1").feature("blk2").label("Detector");
+    //model.component("comp1").geom("geom1").feature("blk2").set("pos", new String[]{"x_det", "0", "0"});
+    //model.component("comp1").geom("geom1").feature("blk2").set("size", new String[]{"0.01", "depth", "height"});
+
+    $geom
+    
     model.component("comp1").geom("geom1").run();
 
     // Create viewing angle for GUI results - not necessary for API solutions
@@ -65,17 +70,25 @@ public class Bubbles_3D {
     model.component("comp1").material().create("mat2", "Common");
     
     // Add property group to material for channel domain and then set values
-    model.component("comp1").material("mat1").propertyGroup().create("RefractiveIndex", "Refractive index");
-    model.component("comp1").material("mat1").label("Channel");
-    model.component("comp1").material("mat1").propertyGroup("RefractiveIndex").set("n", "");
-    model.component("comp1").material("mat1").propertyGroup("RefractiveIndex").set("ki", "");
-    model.component("comp1").material("mat1").propertyGroup("RefractiveIndex")
+    model.component("comp1").material("mat2").propertyGroup().create("RefractiveIndex", "Refractive index");
+    model.component("comp1").material("mat2").label("Channel");
+    model.component("comp1").material("mat2").propertyGroup("RefractiveIndex").set("n", "");
+    model.component("comp1").material("mat2").propertyGroup("RefractiveIndex").set("ki", "");
+    model.component("comp1").material("mat2").propertyGroup("RefractiveIndex")
          .set("n", new String[]{"n_channel", "0", "0", "0", "n_channel", "0", "0", "0", "n_channel"});
-    model.component("comp1").material("mat1").propertyGroup("RefractiveIndex")
+    model.component("comp1").material("mat2").propertyGroup("RefractiveIndex")
          .set("ki", new String[]{"0", "0", "0", "0", "0", "0", "0", "0", "0"});
     
     // Set label for bubble material - actual domain isn't implemented yet
-    model.component("comp1").material("mat2").label("Bubble");
+    model.component("comp1").material("mat1").label("Bubble");
+    model.component("comp1").material("mat1").propertyGroup().create("RefractiveIndex", "Refractive index");
+    model.component("comp1").material("mat1").propertyGroup("RefractiveIndex").set("n", "");
+    model.component("comp1").material("mat1").propertyGroup("RefractiveIndex").set("ki", "");
+    model.component("comp1").material("mat1").propertyGroup("RefractiveIndex")
+         .set("n", new String[]{"n_bubble", "0", "0", "0", "n_bubble", "0", "0", "0", "n_bubble"});
+    model.component("comp1").material("mat1").propertyGroup("RefractiveIndex")
+         .set("ki", new String[]{"0", "0", "0", "0", "0", "0", "0", "0", "0"});
+$set
 
     // Add physics node to component - specifically the geometrical optics module
     model.component("comp1").physics().create("gop", "GeometricalOptics", "geom1");
@@ -87,7 +100,8 @@ public class Bubbles_3D {
     
     // Define boundary condition on thin block for catching rays - effectively a detector
     model.component("comp1").physics("gop").create("wall1", "Wall", 2);
-    model.component("comp1").physics("gop").feature("wall1").selection().set(7);
+    //model.component("comp1").physics("gop").feature("wall1").selection().geom("blk2", 1);
+$domain_set
 
     // Set flag for calculating intensity and power of rays - useful for calculating the intensity detected at the end
     model.component("comp1").physics("gop").prop("IntensityComputation")
@@ -99,6 +113,10 @@ public class Bubbles_3D {
     // Set wavevector and polarization state of rays released from boundary
     model.component("comp1").physics("gop").feature("relb1").set("L0", new int[][]{{1}, {0}, {0}});
     model.component("comp1").physics("gop").feature("relb1").set("InitialPolarizationType", "PartiallyPolarized");
+    
+    // Turn reflected rays off
+    model.component("comp1").physics("gop").feature("matd1").set("ReleaseReflectedRays", "Never");
+    model.component("comp1").physics("gop").prop("MaximumSecondary").setIndex("MaximumSecondary", 0, 0);
 
     // Create ray tracing study node
     model.study().create("std1");
@@ -216,16 +234,16 @@ public class Bubbles_3D {
     
     // Label export nodes
     model.result().export("tbl1").label("Ray Intensity");
-    model.result().export("tbl1").set("filename", "/home/jacob/PycharmProjects/DOP_Comm/src/ray_intensity.csv");
+    model.result().export("tbl1").set("filename", $int);
     model.result().export("tbl2").label("Ray s1");
     model.result().export("tbl2").set("table", "tbl3");
-    model.result().export("tbl2").set("filename", "/home/jacob/PycharmProjects/DOP_Comm/src/ray_s1.csv");
+    model.result().export("tbl2").set("filename", $s1);
     model.result().export("tbl3").label("Ray s2");
     model.result().export("tbl3").set("table", "tbl4");
-    model.result().export("tbl3").set("filename", "/home/jacob/PycharmProjects/DOP_Comm/src/ray_s2.csv");
+    model.result().export("tbl3").set("filename", $s2);
     model.result().export("tbl4").label("Ray s3");
     model.result().export("tbl4").set("table", "tbl5");
-    model.result().export("tbl4").set("filename", "/home/jacob/PycharmProjects/DOP_Comm/src/ray_s3.csv");
+    model.result().export("tbl4").set("filename", $s3);
     
     // Export data to tables
     model.result().export("tbl1").run();

@@ -5,7 +5,7 @@
 import com.comsol.model.*;
 import com.comsol.model.util.*;
 
-/** Model exported on Apr 1 2022, 15:16 by COMSOL 6.0.0.312. */
+/** Model exported on Apr 25 2022, 11:03 by COMSOL 6.0.0.312. */
 public class test {
 
   public static Model run() {
@@ -46,6 +46,62 @@ public class test {
     model.component("comp1").geom("geom1").feature("blk2").label("Detector");
     model.component("comp1").geom("geom1").feature("blk2").set("pos", new String[]{"x_det", "0", "0"});
     model.component("comp1").geom("geom1").feature("blk2").set("size", new String[]{"0.01", "depth", "height"});
+    model.component("comp1").geom("geom1").feature().create("sph0", "Sphere");
+    model.component("comp1").geom("geom1").feature("sph0")
+         .set("pos", new double[]{0.518340791926496, 0.3095623725820474, 0.1596759974678911});
+    model.component("comp1").geom("geom1").feature("sph0").set("r", 0.018287787842611796);
+    model.component("comp1").geom("geom1").feature().create("sph1", "Sphere");
+    model.component("comp1").geom("geom1").feature("sph1")
+         .set("pos", new double[]{0.5951481592438935, 0.3465541194501757, 0.39743149190767935});
+    model.component("comp1").geom("geom1").feature("sph1").set("r", 0.0032161262744511473);
+    model.component("comp1").geom("geom1").feature().create("sph2", "Sphere");
+    model.component("comp1").geom("geom1").feature("sph2")
+         .set("pos", new double[]{0.7118487568691019, 0.6800586918146452, 0.21268715676205616});
+    model.component("comp1").geom("geom1").feature("sph2").set("r", 0.013931601616080567);
+    model.component("comp1").geom("geom1").feature().create("sph3", "Sphere");
+    model.component("comp1").geom("geom1").feature("sph3")
+         .set("pos", new double[]{0.5345594627758116, 0.6629414314928067, 0.42095576531985934});
+    model.component("comp1").geom("geom1").feature("sph3").set("r", 0.02207481847338269);
+    model.component("comp1").geom("geom1").feature().create("sph4", "Sphere");
+    model.component("comp1").geom("geom1").feature("sph4")
+         .set("pos", new double[]{0.5805564790804143, 0.2068013322157265, 0.792077978827178});
+    model.component("comp1").geom("geom1").feature("sph4").set("r", 0.01440855588269804);
+    model.component("comp1").geom("geom1").feature().create("sph5", "Sphere");
+    model.component("comp1").geom("geom1").feature("sph5")
+         .set("pos", new double[]{0.6657566422871432, 0.682999477691042, 0.8581431026145253});
+    model.component("comp1").geom("geom1").feature("sph5").set("r", 0.024238277817265542);
+    model.component("comp1").geom("geom1").feature().create("sph6", "Sphere");
+    model.component("comp1").geom("geom1").feature("sph6")
+         .set("pos", new double[]{0.5611706835134177, 0.05977017746306086, 0.18466861024914244});
+    model.component("comp1").geom("geom1").feature("sph6").set("r", 0.02247055992409234);
+    model.component("comp1").geom("geom1").feature().create("sph7", "Sphere");
+    model.component("comp1").geom("geom1").feature("sph7")
+         .set("pos", new double[]{0.5669067416575723, 0.4245907896436607, 0.9376733226917779});
+    model.component("comp1").geom("geom1").feature("sph7").set("r", 0.022075420082305917);
+    model.component("comp1").geom("geom1").feature().create("sph8", "Sphere");
+    model.component("comp1").geom("geom1").feature("sph8")
+         .set("pos", new double[]{0.8406442963726539, 0.32060591148010137, 0.6813550064539764});
+    model.component("comp1").geom("geom1").feature("sph8").set("r", 0.01379596683935241);
+    model.component("comp1").geom("geom1").feature().create("sph9", "Sphere");
+    model.component("comp1").geom("geom1").feature("sph9")
+         .set("pos", new double[]{0.5294059126861649, 0.7396227367023295, 0.9682985980186146});
+    model.component("comp1").geom("geom1").feature("sph9").set("r", 0.021031016125536952);
+    model.component("comp1").geom("geom1").feature().create("sph10", "Sphere");
+    model.component("comp1").geom("geom1").feature("sph10")
+         .set("pos", new double[]{0.6485457927368814, 0.7783121846072512, 0.11826848293711428});
+    model.component("comp1").geom("geom1").feature("sph10").set("r", 0.018955975705116146);
+    model.component("comp1").geom("geom1").feature().create("sph11", "Sphere");
+    model.component("comp1").geom("geom1").feature("sph11")
+         .set("pos", new double[]{0.9446962110686823, 0.2984639866451432, 0.2927623824023943});
+    model.component("comp1").geom("geom1").feature("sph11").set("r", 0.011749444628221726);
+    model.component("comp1").geom("geom1").feature().create("sph12", "Sphere");
+    model.component("comp1").geom("geom1").feature("sph12")
+         .set("pos", new double[]{0.5136445543720954, 0.6773616828823863, 0.21400469581520626});
+    model.component("comp1").geom("geom1").feature("sph12").set("r", 0.0041206857308386646);
+    model.component("comp1").geom("geom1").feature().create("sph13", "Sphere");
+    model.component("comp1").geom("geom1").feature("sph13")
+         .set("pos", new double[]{0.7459108438529125, 0.059948768063390515, 0.5730246495191536});
+    model.component("comp1").geom("geom1").feature("sph13").set("r", 0.007373119824933429);
     model.component("comp1").geom("geom1").run();
 
     model.view().create("view2", 2);
@@ -61,6 +117,13 @@ public class test {
     model.component("comp1").material("mat1").propertyGroup("RefractiveIndex")
          .set("ki", new String[]{"0", "0", "0", "0", "0", "0", "0", "0", "0"});
     model.component("comp1").material("mat2").label("Bubble");
+    model.component("comp1").material("mat2").propertyGroup().create("RefractiveIndex", "Refractive index");
+    model.component("comp1").material("mat2").propertyGroup("RefractiveIndex").set("n", "");
+    model.component("comp1").material("mat2").propertyGroup("RefractiveIndex").set("ki", "");
+    model.component("comp1").material("mat2").propertyGroup("RefractiveIndex")
+         .set("n", new String[]{"n_bubble", "0", "0", "0", "n_bubble", "0", "0", "0", "n_bubble"});
+    model.component("comp1").material("mat1").propertyGroup("RefractiveIndex")
+         .set("ki", new String[]{"0", "0", "0", "0", "0", "0", "0", "0", "0"});
 
     model.component("comp1").physics().create("gop", "GeometricalOptics", "geom1");
     model.component("comp1").physics("gop").create("relb1", "ReleaseFromBoundary", 2);
@@ -164,18 +227,25 @@ public class test {
     model.result().numerical("ray4").setResult();
     model.result("pg1").label("Ray Trajectories (gop)");
     model.result().export("tbl1").label("Ray Intensity");
-    model.result().export("tbl1").set("filename", "/home/jacob/PycharmProjects/DOP_Comm/src/ray_intensity.csv");
+    model.result().export("tbl1").set("filename", "/home/jacob/PycharmProjects/DOP_Comm/src/ray_intensity_1.csv");
     model.result().export("tbl2").label("Ray s1");
     model.result().export("tbl2").set("table", "tbl3");
-    model.result().export("tbl2").set("filename", "/home/jacob/PycharmProjects/DOP_Comm/src/ray_s1.csv");
+    model.result().export("tbl2").set("filename", "/home/jacob/PycharmProjects/DOP_Comm/src/ray_s1_1.csv");
     model.result().export("tbl3").label("Ray s2");
     model.result().export("tbl3").set("table", "tbl4");
-    model.result().export("tbl3").set("filename", "/home/jacob/PycharmProjects/DOP_Comm/src/ray_s2.csv");
+    model.result().export("tbl3").set("filename", "/home/jacob/PycharmProjects/DOP_Comm/src/ray_s2_1.csv");
     model.result().export("tbl4").label("Ray s3");
     model.result().export("tbl4").set("table", "tbl5");
-    model.result().export("tbl4").set("filename", "/home/jacob/PycharmProjects/DOP_Comm/src/ray_s3.csv");
-    model.result("pg1").run();
+    model.result().export("tbl4").set("filename", "/home/jacob/PycharmProjects/DOP_Comm/src/ray_s3_1.csv");
     model.result().export("tbl1").run();
+    model.result().export("tbl2").run();
+    model.result().export("tbl3").run();
+    model.result().export("tbl4").run();
+
+    model.label("Finished_Bubbles_3D_Model.mph");
+
+    model.component("comp1").physics("gop").feature("matd1").set("ReleaseReflectedRays", "Never");
+    model.component("comp1").physics("gop").prop("MaximumSecondary").setIndex("MaximumSecondary", 0, 0);
 
     return model;
   }

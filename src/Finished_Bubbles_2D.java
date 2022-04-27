@@ -9,43 +9,7 @@ public class Finished_Bubbles_2D {
 		run();
 	}
 	
-	public static Model run() {
-		// Create model with component 1 and 2D geometry
-		Model model = ModelUtil.create("Model");
-		model.modelPath("/home/jacob/PycharmProjects/DOP_Comm/src");
-
-    	model.label("2Dbubbles.mph");
-		
-		// NOTE: Apparently the order that you do things here really matters
-		// Set parameters of the variables for the model
-		model.param().set("lda0", "795[nm]", "wavelength");
-	    model.param().set("f0", "c_const / lda0", "frequency");
-	    model.param().set("width", "20[um]", "length of channel");
-	    model.param().set("height", "10[um]", "height of channel");
-	    model.param().set("n_ch", "1.33", "refractive index of water in channel");
-	    model.param().set("n_bu", "1.0", "refractive index of bubbles");
-	    model.param().set("xmin", "5[um]", "min x pos for bubbles");
-	    model.param().set("xmax", "15[um]", "max x pos for bubbles");
-	    model.param().set("ymin", "0[um]", "min y pos for bubbles");
-	    model.param().set("ymax", "height", "max y pos for bubbles");
-	    model.param().set("rmin", "0.1[um]", "min radius for bubbles");
-	    model.param().set("rmax", "0.5[um]", "max radius for bubbles");
-	    
-	    // Create component
-		model.component().create("comp1", true);
-		
-		// Create geometry
-		model.component("comp1").geom().create("geom1", 2);
-		
-		// Create random function and set seed
-		model.func().create("rn1", "Random");
-		model.func("rn1").set("mean", 0.5);
-		model.func("rn1").set("seedactive", true);
-		
-		// Create mesh for model
-		model.component("comp1").mesh().create("mesh1");
-		
-		// Create water channel
+	public static void createGeom(Model model) {
 		model.component("comp1").geom("geom1").lengthUnit("\u00b5m");
 		model.component("comp1").geom("geom1").create("r1", "Rectangle");
     	model.component("comp1").geom("geom1").feature("r1").label("Channel");
@@ -93,6 +57,45 @@ public class Finished_Bubbles_2D {
 	 	model.component("comp1").geom("geom1").feature().create("c13", "Circle"); 
 	 	model.component("comp1").geom("geom1").feature("c13").set("pos", new double[]{11.744899607108552, 3.4562602228640054}); 
 	 	model.component("comp1").geom("geom1").feature("c13").set("r", 1.4844055244690926); 
+	}
+	
+	public static Model run() {
+		// Create model with component 1 and 2D geometry
+		Model model = ModelUtil.create("Model");
+		model.modelPath("/home/jacob/PycharmProjects/DOP_Comm/src");
+
+    	model.label("2Dbubbles.mph");
+		
+		// NOTE: Apparently the order that you do things here really matters
+		// Set parameters of the variables for the model
+		model.param().set("lda0", "795[nm]", "wavelength");
+	    model.param().set("f0", "c_const / lda0", "frequency");
+	    model.param().set("width", "20[um]", "length of channel");
+	    model.param().set("height", "10[um]", "height of channel");
+	    model.param().set("n_ch", "1.33", "refractive index of water in channel");
+	    model.param().set("n_bu", "1.0", "refractive index of bubbles");
+	    model.param().set("xmin", "5[um]", "min x pos for bubbles");
+	    model.param().set("xmax", "15[um]", "max x pos for bubbles");
+	    model.param().set("ymin", "0[um]", "min y pos for bubbles");
+	    model.param().set("ymax", "height", "max y pos for bubbles");
+	    model.param().set("rmin", "0.1[um]", "min radius for bubbles");
+	    model.param().set("rmax", "0.5[um]", "max radius for bubbles");
+	    
+	    // Create component
+		model.component().create("comp1", true);
+		
+		// Create geometry
+		model.component("comp1").geom().create("geom1", 2);
+		
+		// Create random function and set seed
+		model.func().create("rn1", "Random");
+		model.func("rn1").set("mean", 0.5);
+		model.func("rn1").set("seedactive", true);
+		
+		// Create mesh for model
+		model.component("comp1").mesh().create("mesh1");
+		
+		createGeom(model);
 
 		// Build the geometry
 		model.component("comp1").geom("geom1").run();

@@ -3,7 +3,7 @@
 import com.comsol.model.Model;
 import com.comsol.model.util.ModelUtil;
 
-public class $name {
+public class Bubbles_2D {
 
 	public static void main(String[] args) {
 		run();
@@ -51,7 +51,7 @@ public class $name {
     	model.component("comp1").geom("geom1").feature("r1").label("Channel");
     	model.component("comp1").geom("geom1").feature("r1").set("size", new String[]{"width", "height"});
 
-$what
+    	
 		// Build the geometry
 		model.component("comp1").geom("geom1").run();
 		
