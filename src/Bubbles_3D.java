@@ -264,24 +264,24 @@ $set
     
     // Prepare to store normalized s1 in table 3
     model.result().numerical("ray2").label("Ray sn1");
-    model.result().numerical("ray2").set("looplevelinput", new String[]{"manualindices"});
-    model.result().numerical("ray2").set("looplevelindices", new String[]{"1, 1001"});
+    model.result().numerical("ray2").set("looplevelinput", new String[]{"last"});
+    //model.result().numerical("ray2").set("looplevelindices", new String[]{"1, 1001"});
     model.result().numerical("ray2").set("table", "tbl3");
     model.result().numerical("ray2").set("expr", "gop.sn1");
     model.result().numerical("ray2").set("descr", "Normalized Stokes parameter 1");
     
     // Prepare to store normalized s2 in table 4
     model.result().numerical("ray3").label("Ray sn2");
-    model.result().numerical("ray3").set("looplevelinput", new String[]{"manualindices"});
-    model.result().numerical("ray3").set("looplevelindices", new String[]{"1, 1001"});
+    model.result().numerical("ray3").set("looplevelinput", new String[]{"last"});
+    //model.result().numerical("ray3").set("looplevelindices", new String[]{"1, 1001"});
     model.result().numerical("ray3").set("table", "tbl4");
     model.result().numerical("ray3").set("expr", "gop.sn2");
     model.result().numerical("ray3").set("descr", "Normalized Stokes parameter 2");
     
     // Prepare to store normalized s3 in table 5
     model.result().numerical("ray4").label("Ray sn3");
-    model.result().numerical("ray4").set("looplevelinput", new String[]{"manualindices"});
-    model.result().numerical("ray4").set("looplevelindices", new String[]{"1, 1001"});
+    model.result().numerical("ray4").set("looplevelinput", new String[]{"last"});
+    //model.result().numerical("ray4").set("looplevelindices", new String[]{"1, 1001"});
     model.result().numerical("ray4").set("table", "tbl5");
     model.result().numerical("ray4").set("expr", "gop.sn3");
     model.result().numerical("ray4").set("descr", "Normalized Stokes parameter 3");
