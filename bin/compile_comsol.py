@@ -1,6 +1,19 @@
 import os
 from string import Template
 import numpy as np
+import time
+
+
+def check_overlap(a, b, c, d):
+    """
+    function to check if the intervals (a, b) and (c, d) overlap
+    :param a: lower bound of interval 1
+    :param b: upper bound of interval 1
+    :param c: lower bound of interval 2
+    :param d: upper bound of interval 2
+    :return:
+    """
+    return (np.any(a <= c) & np.any(c <= b)) | (np.any(a <= d) & np.any(d <= b))
 
 
 def write_model_file(seed, input_file, output_file):
@@ -24,17 +37,26 @@ def write_model_file(seed, input_file, output_file):
     max_bubbles = 1000
     num_bubbles = int(np.random.random() * (max_bubbles - min_bubbles + 1) + min_bubbles)
 
-    min_x_pos = 0.5
-    max_x_pos = 1
-    min_y_pos = 0
-    max_y_pos = 1
-    min_z_pos = 0
-    max_z_pos = 1
+    epsilon = 0.01  # create cushion around channel boundaries so comsol doesn't intersect them
+    min_x_pos = 0.25
+    max_x_pos = 1.25
+    min_y_pos = 0 + epsilon
+    max_y_pos = 1 - epsilon
+    min_z_pos = 0 + epsilon
+    max_z_pos = 1 - epsilon
     min_r = 0.001
     max_r = 0.025
 
     code = ""
     num_methods = 0
+
+    # Create array for making sure that there is no overlap between spheres so comsol doesn't break
+    x_upper_bounds = np.zeros(num_bubbles)
+    x_lower_bounds = np.zeros(num_bubbles)
+    y_upper_bounds = np.zeros(num_bubbles)
+    y_lower_bounds = np.zeros(num_bubbles)
+    z_upper_bounds = np.zeros(num_bubbles)
+    z_lower_bounds = np.zeros(num_bubbles)
     for i in range(num_bubbles):
         # Create random pos_x, pos_y, and rad values
         rad = np.random.random() * (max_r - min_r) + min_r
@@ -42,24 +64,36 @@ def write_model_file(seed, input_file, output_file):
         y_pos = np.random.random() * (max_y_pos - min_y_pos - 2 * rad) + min_y_pos + rad
         z_pos = np.random.random() * (max_z_pos - min_z_pos - 2 * rad) + min_z_pos + rad
 
-        # Need to create a new method every 50 for adding spheres to java code due to memory limits
-        if i % 50 == 0:
-            code += "\tpublic static void createGeom" + str(num_methods) + "(Model model) {\n"
-        # Create code block
-        code += "\t \tmodel.component(\"comp1\").geom(\"geom1\").feature().create(\"sph" + str(
-            i) + "\", \"Sphere\"); \n"
-        code += "\t \tmodel.component(\"comp1\").geom(\"geom1\").feature(\"sph" + str(
-            i) + "\").set(\"pos\", new double[]{" + str(x_pos) + ", " + str(y_pos) + ", " + str(z_pos) + "}); \n"
-        code += "\t \tmodel.component(\"comp1\").geom(\"geom1\").feature(\"sph" + str(i) + "\").set(\"r\", " + str(
-            rad) + "); \n"
+        # Check for overlap
+        x_overlap = check_overlap(x_lower_bounds, x_upper_bounds, x_pos - rad, x_pos + rad)
+        y_overlap = check_overlap(y_lower_bounds, y_upper_bounds, y_pos - rad, y_pos + rad)
+        z_overlap = check_overlap(z_lower_bounds, z_upper_bounds, z_pos - rad, z_pos + rad)
 
-        if i % 50 == 49:
-            code += "\t}\n"
-            num_methods += 1
+        if not(x_overlap | y_overlap | z_overlap):
+            # Need to create a new method every 50 for adding spheres to java code due to memory limits
+            if i % 50 == 0:
+                code += "\tpublic static void createGeom" + str(num_methods) + "(Model model) {\n"
+            # Create code block
+            code += "\t \tmodel.component(\"comp1\").geom(\"geom1\").feature().create(\"sph" + str(
+                i) + "\", \"Sphere\"); \n"
+            code += "\t \tmodel.component(\"comp1\").geom(\"geom1\").feature(\"sph" + str(
+                i) + "\").set(\"pos\", new double[]{" + str(x_pos) + ", " + str(y_pos) + ", " + str(z_pos) + "}); \n"
+            code += "\t \tmodel.component(\"comp1\").geom(\"geom1\").feature(\"sph" + str(i) + "\").set(\"r\", " + str(
+                rad) + "); \n"
 
-        if i == num_bubbles-1:
-            code += "\t}\n"
-            num_methods += 1
+            if i % 50 == 49:
+                code += "\t}\n"
+                num_methods += 1
+            elif i == num_bubbles-1:
+                code += "\t}\n"
+                num_methods += 1
+
+            x_lower_bounds[i] = x_pos - rad
+            x_upper_bounds[i] = x_pos + rad
+            y_lower_bounds[i] = y_pos - rad
+            y_upper_bounds[i] = y_pos + rad
+            z_lower_bounds[i] = z_pos - rad
+            z_upper_bounds[i] = z_pos + rad
 
     class_name = "Finished_Bubbles_3D_" + str(seed)
     intensity_file = "\"/home/jacob/PycharmProjects/DOP_Comm/src/Int/ray_intensity_" + str(seed) + ".csv\""
@@ -67,7 +101,7 @@ def write_model_file(seed, input_file, output_file):
     s2_file = "\"/home/jacob/PycharmProjects/DOP_Comm/src/s2/ray_s2_" + str(seed) + ".csv\""
     s3_file = "\"/home/jacob/PycharmProjects/DOP_Comm/src/s3/ray_s3_" + str(seed) + ".csv\""
     mat_set = "\t \tmodel.component(\"comp1\").material(\"mat2\").selection().set(1);"
-    domain_set = "\t \tmodel.component(\"comp1\").physics(\"gop\").feature(\"wall1\").selection().set(" + str(6 + num_bubbles*8) + ");"
+    domain_set = "\t \tmodel.component(\"comp1\").physics(\"gop\").feature(\"wall1\").selection().set(" + str(2 + num_bubbles*8) + ");"
     call_geom = ""
     for i in range(num_methods):
         call_geom += "createGeom" + str(i) + "(model);"
@@ -79,12 +113,11 @@ def write_model_file(seed, input_file, output_file):
     output.close()
 
 
-batch_filename = "comsol_batch.bat"
-
-for i in range(10):
-    # Open batch file
-    batch_file = open(batch_filename, 'w+')
-
+start = time.time()
+#batch_filename = "output_class_files/comsol_batch.bat"
+#batch_script = "#!/bin/bash\n"
+#batch_file = open(batch_filename, 'w+')
+for i in range(4, 5):
     # Define seed for random number generation
     seed = i
 
@@ -99,5 +132,13 @@ for i in range(10):
     temp = os.system("comsol compile -jdkroot /usr/bin/java " + output_filename)
 
     # Write line to batch file
-    class_filename = "Finished_Bubbles_3D_" + str(seed) + ".class"
-    batch_file.write("comsol batch -inputfile " + class_filename + " -outputfile " + class_filename)
+    class_filename = "output_class_files/Finished_Bubbles_3D_" + str(seed) + ".class"
+    mph_filename = "Finished_Bubbles_3D_" + str(seed) + ".mph"
+    #batch_script += "comsol batch -inputfile " + class_filename + "\n"
+
+    # run comsol batch
+    temp2 = os.system("comsol batch -inputfile " + class_filename + "\n")
+
+#batch_file.write(batch_script)
+end = time.time()
+print("Time elapsed: ", end-start)

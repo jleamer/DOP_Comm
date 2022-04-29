@@ -7,20 +7,23 @@ intensity_files = np.sort(os.listdir("Int"))
 s1_files = np.sort(os.listdir("s1"))
 s2_files = np.sort(os.listdir("s2"))
 s3_files = np.sort(os.listdir("s3"))
+x_files = np.sort(os.listdir("x"))
+y_files = np.sort(os.listdir("y"))
+z_files = np.sort(os.listdir("z"))
 
-# Process intensity first
+# Process files
 num_files = intensity_files.size
 num_rays = np.loadtxt("Int/" + intensity_files[0], skiprows=5, delimiter=',').size - 1
 
 intensity = [np.sum(np.loadtxt("Int/" + intensity_files[i], skiprows=5, delimiter=',')[1:num_rays-1]) for i in range(num_files)]
-intensity = np.array(intensity) / num_rays
+s1 = [np.sum(np.loadtxt("s1/" + s1_files[i], skiprows=6, delimiter=',')[1:num_rays-1]) for i in range(num_files)]
+s2 = [np.sum(np.loadtxt("s2/" + s2_files[i], skiprows=6, delimiter=',')[1:num_rays-1]) for i in range(num_files)]
+s3 = [np.sum(np.loadtxt("s3/" + s3_files[i], skiprows=6, delimiter=',')[1:num_rays-1]) for i in range(num_files)]
 
 # Process s1, s2, and s3
-s1 = [np.sum(np.loadtxt("s1/" + s1_files[i], skiprows=6, delimiter=',')[1:num_rays-1]) for i in range(num_files)]
+intensity = np.array(intensity) / num_rays
 s1 = np.array(s1) / num_rays
-s2 = [np.sum(np.loadtxt("s2/" + s2_files[i], skiprows=6, delimiter=',')[1:num_rays-1]) for i in range(num_files)]
 s2 = np.array(s2) / num_rays
-s3 = [np.sum(np.loadtxt("s3/" + s3_files[i], skiprows=6, delimiter=',')[1:num_rays-1]) for i in range(num_files)]
 s3 = np.array(s3) / num_rays
 
 # Process dop
