@@ -83,18 +83,38 @@ minus = (-1) ** np.arange(x_grid_dim)
 kx = (x_index - x_grid_dim / 2) * (np.pi / l_outer)
 print(kx[int(x_grid_dim/2)])
 
-#phi = 0.033 * np.exp(-kx ** 2 / k_inner ** 2) / (k_outer ** 2 + kx ** 2) ** (11/6)
-kx[int(x_grid_dim/2)] = k_outer
-phi = 0.033 * kx ** (-11/3)
+phi = 0.033 * np.exp(-kx ** 2 / k_inner ** 2) / (k_outer ** 2 + kx ** 2) ** (11/6)
+#kx[int(x_grid_dim/2)] = k_outer
+#phi = 0.033 * kx ** (-11/3)
 v = np.array([integrate.simpson(-2 * np.pi * kx[0:i+1] * phi[0:i+1], kx[0:i+1]) for i in range(x_grid_dim)])
-gamma = minus * fft.ifft(minus * v) / dx * 2 * np.pi
+plt.figure(4)
+plt.loglog(kx[int(x_grid_dim/2):], phi[int(x_grid_dim/2):])
+gamma = minus * fft.ifft(minus * v) / dx * (2 * np.pi)
 d = x[int(x_grid_dim/2):] ** (2/3)
 d_from_gamma = 2 * (gamma[int(x_grid_dim/2)] - gamma[int(x_grid_dim/2):])
+print(d_from_gamma)
 plt.figure(3)
 plt.plot(x[int(x_grid_dim/2):], d, label='Analytic')
 plt.plot(x[int(x_grid_dim/2):], d_from_gamma, label='From Gamma')
 plt.legend(numpoints=1)
 
 print(kx)
+
+########################################################
+#
+# According to Goodman, gamma = 4pi/r * int(phi*k*sin(k*r) dk, 0, infty)
+#
+########################################################
+gamma = np.array([4 * np.pi * np.array([integrate.simpson(phi[0:i+1] * kx[0:i+1] * np.sin(kx[0:i+1] * _), kx[0:i+1]) for i in range(x_grid_dim)]) for _ in x])
+temp = x.copy()
+temp[int(x_grid_dim/2)] = 1
+gamma /= temp
+gamma[int(x_grid_dim/2)] = 1
+d_from_gamma = 2 * (gamma[int(x_grid_dim/2)] - gamma[int(x_grid_dim/2):])
+print(d_from_gamma)
+plt.figure(5)
+plt.plot(x[int(x_grid_dim/2):], d, label='Analytic')
+plt.plot(x[int(x_grid_dim/2):], d_from_gamma, label='From Gamma')
+plt.legend(numpoints=1)
 
 plt.show()

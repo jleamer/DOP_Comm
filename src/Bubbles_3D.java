@@ -51,31 +51,35 @@ public class $name {
     model.result().table("tbl7").label("y");
     model.result().table().create("tbl8", "Table");
     model.result().table("tbl8").label("z");
+    model.result().table().create("tbl9", "Table");
+    model.result().table("tbl9").label("Ray s0");
     
     // Create mesh for finite element solving
     model.component("comp1").mesh().create("mesh1");
 
     // Add elements to geometry for channel and detector
-    //model.component("comp1").geom("geom1").create("blk1", "Block");
-    //model.component("comp1").geom("geom1").feature("blk1").label("Channel");
-    //model.component("comp1").geom("geom1").feature("blk1").set("size", new String[]{"width", "depth", "height"});
+    model.component("comp1").geom("geom1").create("blk1", "Block");
+    model.component("comp1").geom("geom1").feature("blk1").label("Channel");
+    model.component("comp1").geom("geom1").feature("blk1").set("size", new String[]{"width/4", "depth", "height"});
+    model.component("comp1").geom("geom1").feature("blk1").set("pos", new String[] {"width/2", "0", "0"});
     //model.component("comp1").geom("geom1").create("blk2", "Block");
     //model.component("comp1").geom("geom1").feature("blk2").label("Detector");
     //model.component("comp1").geom("geom1").feature("blk2").set("pos", new String[]{"x_det", "0", "0"});
     //model.component("comp1").geom("geom1").feature("blk2").set("size", new String[]{"0.01", "depth", "height"});
     model.component("comp1").geom("geom1").create("ps1", "ParametricSurface");
     model.component("comp1").geom("geom1").feature("ps1").set("coord", new String[]{"0", "s1", "s2"});
-    model.component("comp1").geom("geom1").create("ps2", "ParametricSurface");
-    model.component("comp1").geom("geom1").feature("ps2").set("pos", new String[]{"width", "0", "0"});
-    model.component("comp1").geom("geom1").feature("ps2").set("parmax1", "height");
-    model.component("comp1").geom("geom1").feature("ps2").set("parmax2", "depth");
-    model.component("comp1").geom("geom1").feature("ps2").set("coord", new String[]{"0", "s1", "s2"});
-    model.component("comp1").geom("geom1").feature("ps2").set("selresult", true);
-    //model.component("comp1").geom("geom1").create("ps3", "ParametricSurface");
-    //model.component("comp1").geom("geom1").feature("ps3").set("coord", new String[] {"s1", "0", "s2"});
-    //model.component("comp1").geom("geom1").feature("ps3").set("parmax1", "width");
-    //model.component("comp1").geom("geom1").feature("ps3").set("parmax2", "depth");
-    //model.component("comp1").geom("geom1").feature("ps3").set("selresult", true);
+    //model.component("comp1").geom("geom1").create("ps2", "ParametricSurface");
+    //model.component("comp1").geom("geom1").feature("ps2").set("pos", new String[]{"width", "0", "0"});
+    //model.component("comp1").geom("geom1").feature("ps2").set("parmax1", "height");
+    //model.component("comp1").geom("geom1").feature("ps2").set("parmax2", "depth");
+    //model.component("comp1").geom("geom1").feature("ps2").set("coord", new String[]{"0", "s1", "s2"});
+    //model.component("comp1").geom("geom1").feature("ps2").set("selresult", true);
+    model.component("comp1").geom("geom1").create("ps3", "ParametricSurface");
+    model.component("comp1").geom("geom1").feature("ps3").set("coord", new String[] {"0", "s1", "s2"});
+    model.component("comp1").geom("geom1").feature("ps3").set("parmax1", "height");
+    model.component("comp1").geom("geom1").feature("ps3").set("parmax2", "depth");
+    model.component("comp1").geom("geom1").feature("ps3").set("pos", new String[] {"3*width/4", "0", "0"});
+    model.component("comp1").geom("geom1").feature("ps3").set("selresult", true);
     //model.component("comp1").geom("geom1").create("ps4", "ParametricSurface");
     //model.component("comp1").geom("geom1").feature("ps4").set("coord", new String[] {"s1", "0", "s2"});
     //model.component("comp1").geom("geom1").feature("ps4").set("pos", new String[]{"0", "height", "0"});
@@ -93,7 +97,39 @@ public class $name {
     //model.component("comp1").geom("geom1").feature("ps6").set("parmax1", "width");
     //model.component("comp1").geom("geom1").feature("ps6").set("parmax2", "height");
     //model.component("comp1").geom("geom1").feature("ps6").set("selresult", true);
-        
+    
+    model.component("comp1").geom("geom1").create("blk2", "Block");
+    model.component("comp1").geom("geom1").feature("blk2").label("Left Wall");
+    model.component("comp1").geom("geom1").feature("blk2").set("size", new String[]{"width/4", "0.01", "1"});
+    model.component("comp1").geom("geom1").feature("blk2").setIndex("size", 0.01, 2);
+    model.component("comp1").geom("geom1").feature("blk2").set("pos", new String[]{"0", "height", "0"});
+    model.component("comp1").geom("geom1").feature("blk2").setIndex("size", "height", 2);
+    model.component("comp1").geom("geom1").feature("blk2").set("pos", new String[]{"0", "depth", "0"});
+    model.component("comp1").geom("geom1").feature("blk2").set("size", new String[]{"width/2", "0.01", "height"});
+
+    model.component("comp1").geom("geom1").feature().duplicate("blk3", "blk2");
+    model.component("comp1").geom("geom1").feature("blk3").label("Top Wall");
+    model.component("comp1").geom("geom1").feature("blk3").setIndex("size", "depth", 1);
+    model.component("comp1").geom("geom1").feature("blk3").setIndex("size", 0.01, 2);
+    model.component("comp1").geom("geom1").feature("blk3").set("pos", new String[]{"0", "height", "depth"});
+    model.component("comp1").geom("geom1").feature("blk3").set("pos", new String[]{"0", "0", "depth"});
+    model.component("comp1").geom("geom1").feature("blk3").set("pos", new String[]{"0", "0", "depth-0.01"});
+    model.component("comp1").geom("geom1").feature().duplicate("blk4", "blk3");
+    model.component("comp1").geom("geom1").feature("blk4").label("Right Wall");
+    model.component("comp1").geom("geom1").feature("blk4").setIndex("size", 0.01, 1);
+    model.component("comp1").geom("geom1").feature("blk4").setIndex("size", "height", 2);
+    model.component("comp1").geom("geom1").feature("blk4").setIndex("pos", "height-1", 1);
+    model.component("comp1").geom("geom1").feature("blk4").set("pos", new String[]{"0", "height-0.01", "0"});
+    model.component("comp1").geom("geom1").feature("blk4").set("pos", new double[]{0, 0.01, 0});
+    model.component("comp1").geom("geom1").feature("blk4").set("pos", new int[]{0, 0, 0});
+    model.component("comp1").geom("geom1").feature().duplicate("blk5", "blk4");
+    model.component("comp1").geom("geom1").feature("blk5").label("Bottom Wall");
+    model.component("comp1").geom("geom1").feature("blk5").setIndex("size", "depth", 1);
+    model.component("comp1").geom("geom1").feature("blk5").setIndex("size", 0.01, 2);
+    model.component("comp1").geom("geom1").feature("blk2").set("pos", new String[]{"0", "depth-0.01", "0"});
+    model.component("comp1").geom("geom1").runPre("fin");
+    model.component("comp1").geom("geom1").run();
+    
     $geom
     
     model.component("comp1").geom("geom1").run();
@@ -103,17 +139,17 @@ public class $name {
 
     // Add materials to component - need one for bubbles and channel
     model.component("comp1").material().create("mat1", "Common");
-    model.component("comp1").material().create("mat2", "Common");
+    //model.component("comp1").material().create("mat2", "Common");
     
     // Add property group to material for channel domain and then set values
-    model.component("comp1").material("mat2").propertyGroup().create("RefractiveIndex", "Refractive index");
-    model.component("comp1").material("mat2").label("Channel");
-    model.component("comp1").material("mat2").propertyGroup("RefractiveIndex").set("n", "");
-    model.component("comp1").material("mat2").propertyGroup("RefractiveIndex").set("ki", "");
-    model.component("comp1").material("mat2").propertyGroup("RefractiveIndex")
-         .set("n", new String[]{"n_channel", "0", "0", "0", "n_channel", "0", "0", "0", "n_channel"});
-    model.component("comp1").material("mat2").propertyGroup("RefractiveIndex")
-         .set("ki", new String[]{"0", "0", "0", "0", "0", "0", "0", "0", "0"});
+    //model.component("comp1").material("mat2").propertyGroup().create("RefractiveIndex", "Refractive index");
+    //model.component("comp1").material("mat2").label("Channel");
+    //model.component("comp1").material("mat2").propertyGroup("RefractiveIndex").set("n", "");
+    //model.component("comp1").material("mat2").propertyGroup("RefractiveIndex").set("ki", "");
+    //model.component("comp1").material("mat2").propertyGroup("RefractiveIndex")
+    //     .set("n", new String[]{"n_channel", "0", "0", "0", "n_channel", "0", "0", "0", "n_channel"});
+    //model.component("comp1").material("mat2").propertyGroup("RefractiveIndex")
+    //    .set("ki", new String[]{"0", "0", "0", "0", "0", "0", "0", "0", "0"});
     
     // Set label for bubble material - actual domain isn't implemented yet
     model.component("comp1").material("mat1").label("Bubble");
@@ -124,7 +160,13 @@ public class $name {
          .set("n", new String[]{"n_bubble", "0", "0", "0", "n_bubble", "0", "0", "0", "n_bubble"});
     model.component("comp1").material("mat1").propertyGroup("RefractiveIndex")
          .set("ki", new String[]{"0", "0", "0", "0", "0", "0", "0", "0", "0"});
-$set
+
+    model.component("comp1").material().create("mat2", "Common");
+    model.component("comp1").material("mat2").label("Glass");
+    model.component("comp1").material("mat2").selection().set(1);
+    model.component("comp1").material("mat2").propertyGroup().create("RefractiveIndex", "Refractive_index");
+    model.component("comp1").material("mat2").propertyGroup("RefractiveIndex").set("n", new String[]{"1.5"});
+    model.component("comp1").material("mat2").selection().set(1, 2, 3, 4, 5, 6, 7, 8);
 
     // Add physics node to component - specifically the geometrical optics module
     model.component("comp1").physics().create("gop", "GeometricalOptics", "geom1");
@@ -133,10 +175,12 @@ $set
     //	This is set to be the first surface of the channel on the x-axis
     model.component("comp1").physics("gop").create("relb1", "ReleaseFromBoundary", 2);
     model.component("comp1").physics("gop").feature("relb1").selection().set(1);
+    model.component("comp1").physics("gop").feature("relb1").setIndex("Nr", 200, 0);
+    model.component("comp1").physics("gop").feature("relb1").set("I0", $i0);
     
     // Define boundary condition on thin block for catching rays - effectively a detector
     model.component("comp1").physics("gop").create("wall1", "Wall", 2);
-    model.component("comp1").physics("gop").feature("wall1").selection().named("geom1_ps2_bnd");
+    model.component("comp1").physics("gop").feature("wall1").selection().named("geom1_ps3_bnd");
     //model.component("comp1").physics("gop").create("wall2", "Wall", 2);
     //model.component("comp1").physics("gop").feature("wall2").selection().named("geom1_ps3_bnd");
     //model.component("comp1").physics("gop").create("wall3", "Wall", 2);
@@ -157,15 +201,28 @@ $set
     // Set wavevector and polarization state of rays released from boundary
     model.component("comp1").physics("gop").feature("relb1").set("L0", new int[][]{{1}, {0}, {0}});
     model.component("comp1").physics("gop").feature("relb1").set("InitialPolarizationType", "PartiallyPolarized");
-    model.component("comp1").physics("gop").feature("wall1").set("WallCondition", "Freeze");
+    model.component("comp1").physics("gop").feature("relb1").set("P0", $dop);
+    model.component("comp1").physics("gop").feature("relb1").active(false);
+    model.component("comp1").physics("gop").create("relg1", "ReleaseGrid", -1);
+    model.component("comp1").physics("gop").feature("relg1").set("GridType", "Cylindrical");
+    model.component("comp1").physics("gop").feature("relg1")
+         .set("qcc", new String[][]{{"0"}, {"height/2"}, {"depth/2"}});
+    model.component("comp1").physics("gop").feature("relg1").set("Rc", 0.01);
+    model.component("comp1").physics("gop").feature("relg1").setIndex("Ncr", 10, 0);
+    model.component("comp1").physics("gop").feature("relg1").set("Nphi", 50);
+    model.component("comp1").physics("gop").feature("relg1").set("L0", new int[][]{{1}, {0}, {0}});
+    model.component("comp1").physics("gop").feature("relg1").set("InitialPolarizationType", "PartiallyPolarized");
+    model.component("comp1").physics("gop").feature("relg1").set("P0", $dop);
+    model.component("comp1").physics("gop").feature("relg1").set("I0", $i0);
+    //model.component("comp1").physics("gop").feature("wall1").set("WallCondition", "Freeze");
     //model.component("comp1").physics("gop").feature("wall2").set("WallCondition", "Disappear");
     //model.component("comp1").physics("gop").feature("wall3").set("WallCondition", "Disappear");
     //model.component("comp1").physics("gop").feature("wall4").set("WallCondition", "Disappear");
     //model.component("comp1").physics("gop").feature("wall5").set("WallCondition", "Disappear");
     
     // Turn reflected rays off
-    model.component("comp1").physics("gop").feature("matd1").set("ReleaseReflectedRays", "Never");
-    model.component("comp1").physics("gop").prop("MaximumSecondary").setIndex("MaximumSecondary", 0, 0);
+    model.component("comp1").physics("gop").feature("matd1").set("ReleaseReflectedRays", "Always");
+    model.component("comp1").physics("gop").prop("MaximumSecondary").setIndex("MaximumSecondary", 1000, 0);
     
     // Create mesh - coarse seems to avoid some issues with meshing
     //model.component("comp1").mesh("mesh1").create("ftet1", "FreeTet");
@@ -199,6 +256,7 @@ $set
     model.result().numerical().create("ray5", "Ray");
     model.result().numerical().create("ray6", "Ray");
     model.result().numerical().create("ray7", "Ray");
+    model.result().numerical().create("ray8", "Ray");
     model.result().numerical("ray1").set("probetag", "none");
     model.result().numerical("ray2").set("probetag", "none");
     model.result().numerical("ray3").set("probetag", "none");
@@ -206,6 +264,7 @@ $set
     model.result().numerical("ray5").set("probetag", "none");
     model.result().numerical("ray6").set("probetag", "none");
     model.result().numerical("ray7").set("probetag", "none");
+    model.result().numerical("ray8").set("probetag", "none");
     
     // Create figure of rays and color by intensity as they propagate
     model.result().create("pg1", "PlotGroup3D");
@@ -223,18 +282,19 @@ $set
     model.result().export().create("tbl5", "Table");
     model.result().export().create("tbl6", "Table");
     model.result().export().create("tbl7", "Table");
+    model.result().export().create("tbl8", "Table");
 
     // Define extents of the ray tracing study - here we consider time steps of 0.01 ns from 0 to 10 ns
-    model.study("std1").feature("rtrac").set("tlist", "range(0,0.01,10)");
+    model.study("std1").feature("rtrac").set("tlist", "range(0,0.01,15)");
 
     // Set up and run ray tracing study
     model.sol("sol1").attach("std1");
     model.sol("sol1").feature("st1").label("Compile Equations: Ray Tracing");
     model.sol("sol1").feature("v1").label("Dependent Variables 1.1");
-    model.sol("sol1").feature("v1").set("clist", new String[]{"range(0,0.01,10)", "0.01[ns]"});
+    model.sol("sol1").feature("v1").set("clist", new String[]{"range(0,0.01,15)", "0.01[ns]"});
     model.sol("sol1").feature("t1").label("Time-Dependent Solver 1.1");
     model.sol("sol1").feature("t1").set("tunit", "ns");
-    model.sol("sol1").feature("t1").set("tlist", "range(0,0.01,10)");
+    model.sol("sol1").feature("t1").set("tlist", "range(0,0.01,15)");
     model.sol("sol1").feature("t1").set("rtol", 1.0E-5);
     model.sol("sol1").feature("t1").set("timemethod", "genalpha");
     model.sol("sol1").feature("t1").set("estrat", "exclude");
@@ -256,35 +316,40 @@ $set
     
     // Prepare to store intensity values in table 2
     model.result().numerical("ray1").label("Ray Intensity");
-    model.result().numerical("ray1").set("looplevelinput", new String[]{"last"});
+    //model.result().numerical("ray1").set("looplevelinput", new String[]{"last"});
+    model.result().numerical("ray1").set("looplevelinput", new String[]{"manualindices"});
+    model.result().numerical("ray1").set("looplevelindices", new String[] {"1, 1501"});
     model.result().numerical("ray1").set("table", "tbl2");
     model.result().numerical("ray1").set("expr", "gop.I");
     model.result().numerical("ray1").set("unit", "W/m^2");
     model.result().numerical("ray1").set("descr", "Intensity");
     
     // Prepare to store normalized s1 in table 3
-    model.result().numerical("ray2").label("Ray sn1");
-    model.result().numerical("ray2").set("looplevelinput", new String[]{"last"});
-    //model.result().numerical("ray2").set("looplevelindices", new String[]{"1, 1001"});
+    model.result().numerical("ray2").label("Ray s1");
+    //model.result().numerical("ray2").set("looplevelinput", new String[]{"last"});
+    model.result().numerical("ray2").set("looplevelinput", new String[]{"manualindices"});
+    model.result().numerical("ray2").set("looplevelindices", new String[]{"1, 1501"});
     model.result().numerical("ray2").set("table", "tbl3");
-    model.result().numerical("ray2").set("expr", "gop.sn1");
-    model.result().numerical("ray2").set("descr", "Normalized Stokes parameter 1");
+    model.result().numerical("ray2").set("expr", "gop.s1");
+    model.result().numerical("ray2").set("descr", "Stokes parameter 1");
     
     // Prepare to store normalized s2 in table 4
-    model.result().numerical("ray3").label("Ray sn2");
-    model.result().numerical("ray3").set("looplevelinput", new String[]{"last"});
-    //model.result().numerical("ray3").set("looplevelindices", new String[]{"1, 1001"});
+    model.result().numerical("ray3").label("Ray s2");
+    //model.result().numerical("ray3").set("looplevelinput", new String[]{"last"});
+    model.result().numerical("ray3").set("looplevelinput", new String[]{"manualindices"});
+    model.result().numerical("ray3").set("looplevelindices", new String[]{"1, 1501"});
     model.result().numerical("ray3").set("table", "tbl4");
-    model.result().numerical("ray3").set("expr", "gop.sn2");
-    model.result().numerical("ray3").set("descr", "Normalized Stokes parameter 2");
+    model.result().numerical("ray3").set("expr", "gop.s2");
+    model.result().numerical("ray3").set("descr", "Stokes parameter 2");
     
     // Prepare to store normalized s3 in table 5
-    model.result().numerical("ray4").label("Ray sn3");
-    model.result().numerical("ray4").set("looplevelinput", new String[]{"last"});
-    //model.result().numerical("ray4").set("looplevelindices", new String[]{"1, 1001"});
+    model.result().numerical("ray4").label("Ray s3");
+    //model.result().numerical("ray4").set("looplevelinput", new String[]{"last"});
+    model.result().numerical("ray4").set("looplevelinput", new String[]{"manualindices"});
+    model.result().numerical("ray4").set("looplevelindices", new String[]{"1, 1501"});
     model.result().numerical("ray4").set("table", "tbl5");
-    model.result().numerical("ray4").set("expr", "gop.sn3");
-    model.result().numerical("ray4").set("descr", "Normalized Stokes parameter 3");
+    model.result().numerical("ray4").set("expr", "gop.s3");
+    model.result().numerical("ray4").set("descr", "Stokes parameter 3");
     
     // Get position of rays at end to filter out
     model.result().numerical("ray5").label("Ray x");
@@ -305,6 +370,12 @@ $set
     model.result().numerical("ray7").set("expr", "qz");
     model.result().numerical("ray7").set("descr", "Z Coordinate");
     
+    model.result().numerical("ray8").label("Ray s0");
+    model.result().numerical("ray8").set("looplevelinput", new String[]{"last"});
+    model.result().numerical("ray8").set("table", "tbl9");
+    model.result().numerical("ray8").set("expr", "gop.s0");
+    model.result().numerical("ray8").set("descr", "Stokes parameter 0");
+    
     // Store desired results in tables
     model.result().numerical("ray1").setResult();
     model.result().numerical("ray2").setResult();
@@ -313,6 +384,7 @@ $set
     model.result().numerical("ray5").setResult();
     model.result().numerical("ray6").setResult();
     model.result().numerical("ray7").setResult();
+    model.result().numerical("ray8").setResult();
     
     // Label figure
     model.result("pg1").label("Ray Trajectories (gop)");
@@ -338,6 +410,8 @@ $set
     model.result().export("tbl7").label("Z Coordinate");
     model.result().export("tbl7").set("table", "tbl8");
     model.result().export("tbl7").set("filename", $z);
+    model.result().export("tbl8").label("Ray s0");
+    model.result().export("tbl8").set("filename", $s0);
     
     // Export data to tables
     model.result().export("tbl1").run();
@@ -347,6 +421,7 @@ $set
     model.result().export("tbl5").run();
     model.result().export("tbl6").run();
     model.result().export("tbl7").run();
+    model.result().export("tbl8").run();
 
     return model;
   }
