@@ -152,7 +152,7 @@ def write_model_file(seed, input_file, output_file, dop, intensity):
 
     max_int = 1.05 * intensity
     min_int = 0.95 * intensity
-    intensity_set = "\"" + str(np.random.random() * (max_int - min_int) + min_int) + "[W/m^2]\""
+    intensity_set = "\"" + str(intensity) + "[W/m^2]\""
 
     class_name = "Finished_Bubbles_3D_" + str(seed)
     intensity_file = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test/P=" + str(dop) + "/Int/ray_intensity_" + seed_name + ".csv\""
