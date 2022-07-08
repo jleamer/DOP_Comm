@@ -155,16 +155,16 @@ def write_model_file(seed, input_file, output_file, dop, intensity):
     intensity_set = "\"" + str(intensity) + "[W/m^2]\""
 
     class_name = "Finished_Bubbles_3D_" + str(seed)
-    intensity_file = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test/P=" + str(dop) + "/Int/ray_intensity_" + seed_name + ".csv\""
-    s0_file = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test/P=" + str(dop) + "/s0/ray_s0_" + seed_name + ".csv\""
-    s1_file = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test/P=" + str(dop) + "/s1/ray_s1_" + seed_name + ".csv\""
-    s2_file = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test/P=" + str(dop) + "/s2/ray_s2_" + seed_name + ".csv\""
-    s3_file = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test/P=" + str(dop) + "/s3/ray_s3_" + seed_name + ".csv\""
+    intensity_file = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test_arb_pol/P=" + str(dop) + "/Int/ray_intensity_" + seed_name + ".csv\""
+    s0_file = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test_arb_pol/P=" + str(dop) + "/s0/ray_s0_" + seed_name + ".csv\""
+    s1_file = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test_arb_pol/P=" + str(dop) + "/s1/ray_s1_" + seed_name + ".csv\""
+    s2_file = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test_arb_pol/P=" + str(dop) + "/s2/ray_s2_" + seed_name + ".csv\""
+    s3_file = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test_arb_pol/P=" + str(dop) + "/s3/ray_s3_" + seed_name + ".csv\""
     #mat_set = "\t \tmodel.component(\"comp1\").material(\"mat2\").selection().set(1);"
     #domain_set = "\t \tmodel.component(\"comp1\").physics(\"gop\").feature(\"wall1\").selection().set(" + str(2 + (num_bubbles-num_skipped)*8) + ");"
-    x_set = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test/P=" + str(dop) + "/x/ray_x_" + seed_name + ".csv\""
-    y_set = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test/P=" + str(dop) + "/y/ray_y_" + seed_name + ".csv\""
-    z_set = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test/P=" + str(dop) + "/z/ray_z_" + seed_name + ".csv\""
+    x_set = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test_arb_pol/P=" + str(dop) + "/x/ray_x_" + seed_name + ".csv\""
+    y_set = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test_arb_pol/P=" + str(dop) + "/y/ray_y_" + seed_name + ".csv\""
+    z_set = "\"/home/jacob/PycharmProjects/DOP_Comm/src/DOP_test_arb_pol/P=" + str(dop) + "/z/ray_z_" + seed_name + ".csv\""
     call_geom = ""
     for i in range(num_methods):
         call_geom += "createGeom" + str(i) + "(model);"
@@ -184,7 +184,7 @@ start = time.time()
 dop_list = [0.2, 0.4, 0.6, 0.8, 1.0]
 intensity = 1000
 num_samples = 500
-for j in range(5):
+for j in range(2, 5):
     for i in range(1000):
         # Define seed for random number generation
         seed = j*num_samples + i
@@ -196,7 +196,7 @@ for j in range(5):
         else:
             seed_name = str(seed)
         input_filename = "Bubbles_3D.java"
-        output_filename = "output_class_files/p=" + str(dop) + "/Finished_Bubbles_3D_" + str(seed) + ".java"
+        output_filename = "output_class_files_arb_pol/p=" + str(dop) + "/Finished_Bubbles_3D_" + str(seed) + ".java"
 
         # Edit file
         write_model_file(seed, input_filename, output_filename, dop, intensity)
@@ -205,7 +205,7 @@ for j in range(5):
         temp = os.system("comsol compile -jdkroot /usr/bin/java " + output_filename)
 
         # Write line to batch file
-        class_filename = "output_class_files/p=" + str(dop) + "/Finished_Bubbles_3D_" + str(seed) + ".class"
+        class_filename = "output_class_files_arb_pol/p=" + str(dop) + "/Finished_Bubbles_3D_" + str(seed) + ".class"
         mph_filename = "Finished_Bubbles_3D_" + str(seed) + ".mph"
         #batch_script += "comsol batch -inputfile " + class_filename + "\n"
 

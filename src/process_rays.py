@@ -76,9 +76,15 @@ def get_initial_data(file):
     :param file:    the name of the file to process
     :return:        array of initial data
     """
+    """
+    # load data and transpose to slice out time info
     data = np.loadtxt(file, skiprows=5, delimiter=',').T[1:]
+
+    # save data in first column for each remaining row
     initial_data = np.array([data[i][0] for i in range(501)])
-    return np.sum(initial_data)
+    """
+    initial_data = np.loadtxt(file, skiprows=5, delimiter=',')[0][1:]
+    return np.nansum(initial_data)
 
 
 def log_normal(i, i0, sigma):
@@ -122,11 +128,11 @@ def get_plots(dir):
     zl = 0
     tol = 1e-4
 
-    # Load intensity, s1, s2, and s3 data at final time
-    intensity_of_rays = np.nanmean([np.loadtxt(_, skiprows=6, delimiter=',') for _ in intensity_files])
-    final_s1 = np.nanmean([np.loadtxt(_, skiprows=6, delimiter=',') for _ in s1_files])
-    final_s2 = np.nanmean([np.loadtxt(_, skiprows=6, delimiter=',') for _ in s2_files])
-    final_s3 = np.nanmean([np.loadtxt(_, skiprows=6, delimiter=',') for _ in s3_files])
+    # Load intensity, s1, s2, and s3 data at final time and obtain mean of rays for each run
+    final_intensity = np.nanmean([np.nanmean(np.loadtxt(_, skiprows=6, delimiter=',')[1:]) for _ in intensity_files])
+    final_s1 = np.array([np.nanmean(np.loadtxt(_, skiprows=6, delimiter=',')[1:]) for _ in s1_files]) / final_intensity
+    final_s2 = np.array([np.nanmean(np.loadtxt(_, skiprows=6, delimiter=',')[1:]) for _ in s2_files]) / final_intensity
+    final_s3 = np.array([np.nanmean(np.loadtxt(_, skiprows=6, delimiter=',')[1:]) for _ in s3_files]) / final_intensity
 
     """
     # Normalize stokes parameters of rays using intensity of rays
@@ -142,10 +148,10 @@ def get_plots(dir):
     exp_s3 = np.array([remove_rays(final_norm_s3[i][1:], x_files[i], y_files[i], z_files[i], x_pos, yu, yl, zu, zl, tol) for i in range(num_files)])
     """
     # Process initial data from simulations
-    initial_intensity = np.array([np.nanmean(get_initial_data(_)) for _ in intensity_files])
-    initial_s1 = np.array([np.nanmean(get_initial_data(_)) for _ in s1_files])
-    initial_s2 = np.nanmean([np.nanmean(get_initial_data(_)) for _ in s2_files])
-    initial_s3 = np.nanmean([np.nanmean(get_initial_data(_)) for _ in s3_files])
+    initial_intensity = np.nanmean([np.nanmean(get_initial_data(_)) for _ in intensity_files])
+    initial_s1 = np.array([np.nanmean(get_initial_data(_)) for _ in s1_files]) / initial_intensity
+    initial_s2 = np.array([np.nanmean(get_initial_data(_)) for _ in s2_files]) / initial_intensity
+    initial_s3 = np.array([np.nanmean(get_initial_data(_)) for _ in s3_files]) / initial_intensity
 
     """
     # Process data for plotting
@@ -179,65 +185,66 @@ def get_plots(dir):
     rem_init_s2 = np.array(rem_init_s2)
     rem_init_s3 = np.array(rem_init_s3)
     """
-    initial_dop = np.sqrt(initial_s1 ** 2 + initial_s2 ** 2 + initial_s3 ** 2) / initial_intensity
+    initial_dop = np.sqrt(initial_s1 ** 2 + initial_s2 ** 2 + initial_s3 ** 2)
+    final_dop = np.sqrt(final_s1 ** 2 + final_s2 ** 2 + final_s3 ** 2)
 
     # Create parameters for tables to attach to plots
     columns = ["Initial Mean", "Final Mean"]
 
     # Plot results
     plt.figure(1)
-    plt.plot(avg_I, 'o-')
+    plt.plot(final_intensity, 'o-')
     plt.xlabel("Iteration #")
     plt.ylabel("Intensity (W/m^2)")
     plt.savefig(dir + "/figs/intensity.png", format='png', dpi=300)
 
     plt.figure(2)
-    plt.plot(rem_fin_s1, 'o-', label='Final')
+    plt.plot(final_s1, 'o-', label='Final')
     plt.plot(initial_s1, '-', label='Initial')
-    plt.plot(np.mean(rem_fin_s1) * np.ones(rem_fin_s1.size), 'k--', label='Final Mean')
+    plt.plot(np.nanmean(final_s1) * np.ones(final_s1.size), 'k--', label='Final Mean')
     plt.xlabel("Iteration #")
     plt.ylabel("Normalized s1")
     plt.legend(numpoints=1)
-    plt.table(cellText=[['%.5f' % (np.nanmean(initial_s1)), '%.5f' % (np.mean(rem_fin_s1))]],
+    plt.table(cellText=[['%.5f' % (np.nanmean(initial_s1)), '%.5f' % (np.nanmean(final_s1))]],
               colLabels=columns,
               cellLoc='center',
               loc='top')
     plt.savefig(dir + "/figs/s1.png", format='png', dpi=300)
 
     plt.figure(3)
-    plt.plot(rem_fin_s2, 'o-', label='Final')
+    plt.plot(final_s2, 'o-', label='Final')
     plt.plot(initial_s2, '-', label='Initial')
-    plt.plot(np.mean(rem_fin_s2) * np.ones(rem_fin_s2.size), 'k--', label='Final Mean')
+    plt.plot(np.nanmean(final_s2) * np.ones(final_s2.size), 'k--', label='Final Mean')
     plt.xlabel("Iteration #")
     plt.ylabel("Normalized s2")
     plt.legend(numpoints=1)
-    plt.table(cellText=[['%.5f' % (np.nanmean(initial_s2)), '%.5f' % (np.mean(rem_fin_s2))]],
+    plt.table(cellText=[['%.5f' % (np.nanmean(initial_s2)), '%.5f' % (np.nanmean(final_s2))]],
               colLabels=columns,
               cellLoc='center',
               loc='top')
     plt.savefig(dir + "/figs/s2.png", format='png', dpi=300)
 
     plt.figure(4)
-    plt.plot(rem_fin_s3, 'o-', label='Final')
+    plt.plot(final_s3, 'o-', label='Final')
     plt.plot(initial_s3, '-', label='Initial')
-    plt.plot(np.mean(rem_fin_s3) * np.ones(rem_fin_s3.size), 'k--', label='Final Mean')
+    plt.plot(np.nanmean(final_s3) * np.ones(final_s3.size), 'k--', label='Final Mean')
     plt.xlabel("Iteration #")
     plt.ylabel("Normalized s3")
     plt.legend(numpoints=1)
-    plt.table(cellText=[['%.5f' % (np.nanmean(initial_s3)), '%.5f' % (np.mean(rem_fin_s3))]],
+    plt.table(cellText=[['%.5f' % (np.nanmean(initial_s3)), '%.5f' % (np.nanmean(final_s3))]],
               colLabels=columns,
               cellLoc='center',
               loc='top')
     plt.savefig(dir + "/figs/s3.png", format='png', dpi=300)
 
     plt.figure(5)
-    plt.plot(dop, 'o-', label='Final')
+    plt.plot(final_dop, 'o-', label='Final')
     plt.plot(initial_dop, 'x-', label='Initial')
-    plt.plot(np.mean(dop) * np.ones(dop.size), 'k--', label='Final Mean')
+    plt.plot(np.nanmean(final_dop) * np.ones(final_dop.size), 'k--', label='Final Mean')
     plt.xlabel("Iteration #")
     plt.ylabel("DOP")
     plt.legend(numpoints=1)
-    plt.table(cellText=[['%.5f' % (np.nanmean(initial_dop)), '%.5f' % (np.nanmean(dop))]],
+    plt.table(cellText=[['%.5f' % (np.nanmean(initial_dop)), '%.5f' % (np.nanmean(final_dop))]],
               colLabels=columns,
               cellLoc='center',
               loc='top')
@@ -245,16 +252,108 @@ def get_plots(dir):
 
     print("Directory: ", dir)
     print("Mean initial DOP: ", np.nanmean(initial_dop))
-    print("Mean final DOP: ", np.nanmean(dop))
+    print("Mean final DOP: ", np.nanmean(final_dop))
     print("Mean initial s1:", np.nanmean(initial_s1))
-    print("Mean final s1: ", np.nanmean(exp_s1))
+    print("Mean final s1: ", np.nanmean(final_s1))
     print("Mean initial s2: ", np.nanmean(initial_s2))
-    print("Mean final s2: ", np.nanmean(exp_s2))
+    print("Mean final s2: ", np.nanmean(final_s2))
     print("Mean initial s3: ", np.nanmean(initial_s3))
-    print("Mean final s3: ", np.nanmean(exp_s3))
+    print("Mean final s3: ", np.nanmean(final_s3))
+    print("\n")
 
-    plt.show()
+
+def test(dir):
+    # Create lists for filenames
+    intensity_files = get_filenames(dir + "/Int")
+    s1_files = get_filenames(dir + "/s1")
+    s2_files = get_filenames(dir + "/s2")
+    s3_files = get_filenames(dir + "/s3")
+
+    # Load intensity, s1, s2, and s3 data at final time and obtain mean of rays for each run
+    final_intensity = np.array([np.nanmean(np.loadtxt(_, skiprows=6, delimiter=',')[1:]) for _ in intensity_files])
+    final_s1 = np.nanmean([np.nanmean(np.loadtxt(_, skiprows=6, delimiter=',')[1:]) for _ in s1_files]) / np.nanmean(final_intensity)
+    final_s2 = np.nanmean([np.nanmean(np.loadtxt(_, skiprows=6, delimiter=',')[1:]) for _ in s2_files]) / np.nanmean(final_intensity)
+    final_s3 = np.nanmean([np.nanmean(np.loadtxt(_, skiprows=6, delimiter=',')[1:]) for _ in s3_files]) / np.nanmean(final_intensity)
+
+    # Process initial data from simulations
+    initial_intensity = np.array([np.nanmean(get_initial_data(_)) for _ in intensity_files])
+    initial_s1 = np.nanmean([np.nanmean(get_initial_data(_)) for _ in s1_files]) / np.nanmean(initial_intensity)
+    initial_s2 = np.nanmean([np.nanmean(get_initial_data(_)) for _ in s2_files]) / np.nanmean(initial_intensity)
+    initial_s3 = np.nanmean([np.nanmean(get_initial_data(_)) for _ in s3_files]) / np.nanmean(initial_intensity)
+
+    # Calculate DOP
+    initial_dop = np.sqrt(initial_s1 ** 2 + initial_s2 ** 2 + initial_s3 ** 2)
+    final_dop = np.sqrt(final_s1 ** 2 + final_s2 ** 2 + final_s3 ** 2)
+
+    init_val = [initial_dop, initial_s1, initial_s2, initial_s3]
+    fin_val = [final_dop, final_s1, final_s2, final_s3]
+
+    scin_index = np.nanmean(final_intensity ** 2) / np.nanmean(final_intensity) ** 2 - 1
+    print(dir, scin_index)
+
+    return init_val, fin_val
+
 
 if __name__ == "__main__":
-    get_plots("DOP_test/P=0.2")
-    get_plots("DOP_test/P=0.4")
+    main_dir = "DOP_test"
+    P02_init, P02_fin = test(main_dir + "/P=0.2")
+    P04_init, P04_fin = test(main_dir + "/P=0.4")
+    P06_init, P06_fin = test(main_dir + "/P=0.6")
+    P08_init, P08_fin = test(main_dir + "/P=0.8")
+    P10_init, P10_fin = test(main_dir + "/P=1.0")
+
+    # Get initial values
+    init_dop = np.array([P02_init[0], P04_init[0], P06_init[0], P08_init[0], P10_init[0]])
+    init_s1 = np.array([P02_init[1], P04_init[1], P06_init[1], P08_init[1], P10_init[1]])
+    init_s2 = np.array([P02_init[2], P04_init[2], P06_init[2], P08_init[2], P10_init[2]])
+    init_s3 = np.array([P02_init[3], P04_init[3], P06_init[3], P08_init[3], P10_init[3]])
+
+    # Get final values
+    fin_dop = np.array([P02_fin[0], P04_fin[0], P06_fin[0], P08_fin[0], P10_fin[0]])
+    fin_s1 = np.array([P02_fin[1], P04_fin[1], P06_fin[1], P08_fin[1], P10_fin[1]])
+    fin_s2 = np.array([P02_fin[2], P04_fin[2], P06_fin[2], P08_fin[2], P10_fin[2]])
+    fin_s3 = np.array([P02_fin[3], P04_fin[3], P06_fin[3], P08_fin[3], P10_fin[3]])
+
+    init = np.vstack((init_dop, init_s1, init_s2, init_s3))
+    np.savetxt(main_dir + "/initial_data.csv", init, delimiter=',')
+    fin = np.vstack((fin_dop, fin_s1, fin_s2, fin_s3))
+    np.savetxt(main_dir + "/final_data.csv", fin, delimiter=',')
+
+    ideal = np.linspace(0.1, 1.0, 100)
+    plt.figure(1)
+    plt.title("DOP Comparison")
+    plt.plot(init_dop, fin_dop, 'x', label='Data', ms=12)
+    plt.plot(ideal, ideal, 'k--', label='Ideal')
+    plt.xlabel("Initial DOP")
+    plt.ylabel("Final DOP")
+    plt.legend(numpoints=1)
+    plt.savefig(main_dir + "/figs/dop_comp.png", format='png', dpi=300)
+
+    plt.figure(2)
+    plt.title("s1 Comparison")
+    plt.plot(init_s1, fin_s1, 'x', label='Data', ms=12)
+    plt.plot(ideal, ideal, 'k--', label='Ideal')
+    plt.xlabel("Initial s1")
+    plt.ylabel("Final s1")
+    plt.legend(numpoints=1)
+    plt.savefig(main_dir + "/figs/s1_comp.png", format='png', dpi=300)
+
+    plt.figure(3)
+    plt.title("s2 Comparison")
+    plt.plot(init_s2, fin_s2, 'x', label='Data', ms=12)
+    #plt.plot(ideal, ideal, 'k--', label='Ideal')
+    plt.xlabel("Initial s2")
+    plt.ylabel("Final s2")
+    plt.legend(numpoints=1)
+    plt.savefig(main_dir + "/figs/s2_comp.png", format='png', dpi=300)
+
+    plt.figure(4)
+    plt.title("s3 Comparison")
+    plt.plot(init_s3, fin_s3, 'x', label='Data', ms=12)
+    #plt.plot(ideal, ideal, 'k--', label='Ideal')
+    plt.xlabel("Initial s3")
+    plt.ylabel("Final s3")
+    plt.legend(numpoints=1)
+    plt.savefig(main_dir + "/figs/s3_comp.png", format='png', dpi=300)
+
+    plt.show()

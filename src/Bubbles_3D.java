@@ -214,6 +214,9 @@ public class $name {
     model.component("comp1").physics("gop").feature("relg1").set("InitialPolarizationType", "PartiallyPolarized");
     model.component("comp1").physics("gop").feature("relg1").set("P0", $dop);
     model.component("comp1").physics("gop").feature("relg1").set("I0", $i0);
+    model.component("comp1").physics("gop").feature("relg1").set("a10", 0.45);
+    model.component("comp1").physics("gop").feature("relg1").set("a20", -0.33);
+    model.component("comp1").physics("gop").feature("relg1").set("delta0", "-pi/3");
     //model.component("comp1").physics("gop").feature("wall1").set("WallCondition", "Freeze");
     //model.component("comp1").physics("gop").feature("wall2").set("WallCondition", "Disappear");
     //model.component("comp1").physics("gop").feature("wall3").set("WallCondition", "Disappear");
