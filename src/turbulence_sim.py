@@ -52,11 +52,11 @@ def batch_sim(input_directory, output_directory, init_dop, run_num):
 
 if __name__ == "__main__":
     # Define number of grid points - should be power of 2 for fft
-    N_gridpts = 1024
+    N_gridpts = 256
 
     # Define number of points and amplitude
     k_grid_dim = N_gridpts
-    k_amplitude = 1000
+    k_amplitude = 10
 
     # Create index for kx and ky using np.newaxis
     indx_kx = np.arange(k_grid_dim)[:, np.newaxis]
@@ -87,25 +87,38 @@ if __name__ == "__main__":
 
     # Perform simulation specified number of times
     num_batches = 100
-    num_seeds = 100
+
+    # Make directory if it doesn't exist, empty it and remake it if it does
+    vol_directory = "phase_volumes"
+    if not os.path.exists(vol_directory):
+        os.makedirs(vol_directory)
+    else:
+        shutil.rmtree("phase_volumes")
+        os.makedirs("phase_volumes")
+
+    # Generate random phase volumes
+    with Pool() as pool:
+        realizations = list(
+            pool.imap(get_realization,
+                      zip(get_seeds(num_batches), repeat(N_gridpts), repeat(pos_kernel), repeat(vol_directory))))
+
+    # Make directory for results if it doesn't exist, empty it and remake if it does
+    if not os.path.exists("phase_volumes/P=" + str(dop)):
+        os.makedirs("phase_volumes/P=" + str(dop))
+    else:
+        shutil.rmtree("phase_screens/P=")
+        os.makedirs("phase_screens/")
+    # Run comsol simulations for each phase volume
     for i in range(num_batches):
-        # Create folders for phase screens
+        # Create folders for results
         # If the specified directory does not exist, create it
-        if not os.path.exists("phase_screens/" + str(i)):
-            os.makedirs("phase_screens/" + str(i))
+        if not os.path.exists("phase_volumes/" + str(i)):
+            os.makedirs("phase_volumes/" + str(i))
         else:
             shutil.rmtree("phase_screens/" + str(i))
             os.makedirs("phase_screens/" + str(i))
 
-        # Specify directory to save phase screens to
-        screen_directory = "phase_screens/" + str(i) + "/"
-
-        # Create the desired number of realization
-        with Pool() as pool:
-            realizations = list(
-                pool.imap(get_realization, zip(get_seeds(num_seeds), repeat(N_gridpts), repeat(pos_kernel), repeat(screen_directory))))
-
-        output_loc = "phase_screens/P=" + str(dop)
+        output_loc = "phase_volumes/P=" + str(dop)
         if not os.path.exists(output_loc):
             os.makedirs(output_loc)
         batch_sim(screen_directory, output_loc, dop, i)

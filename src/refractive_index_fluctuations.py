@@ -43,22 +43,26 @@ def get_realization(args):
     seed = args[0]
     grid_pts = args[1]
     kernel = args[2]
-    file = args[3] + str(seed) + ".csv"
+    x = args[3]
+    y = args[4]
+    z = args[5]
+    file = args[6] + str(seed) + ".csv"
 
     np.random.seed(seed)
     random_noise = np.random.uniform(low=-np.sqrt(3), high=np.sqrt(3), size=(grid_pts, grid_pts, grid_pts))
     filtered = convolve(kernel, random_noise, mode='same').real
     filtered = filtered.real * filtered.real[grid_pts // 2, grid_pts // 2, grid_pts // 2]
+    data = np.vstack((x.flatten(), y.flatten(), z.flatten(), filtered.flatten()))
+    np.savetxt(file + str(seed) + ".csv", data.T, delimiter=',')
     return filtered
 
 
-def save_realization(realization, seed, x, y, z):
+def save_realization(path, realization, seed, x, y, z):
     """
     Function for saving a realization in 2d slices
     :param realization:     3d phase screen realization
     :return:
     """
-    path = "phase_screens/3d/"
     data = np.vstack((x.flatten(), y.flatten(), z.flatten(), realization.flatten()))
     np.savetxt(path + str(seed) + ".csv", data.T, delimiter=',')
 
@@ -109,8 +113,9 @@ if __name__ == '__main__':
 
     # Obtain realizations of noise filtered by pos_kernel
     file = "phase_screens/"
+    args = zip(get_seeds(4), repeat(N_gridpts), repeat(pos_kernel), repeat(xx), repeat(yy), repeat(zz), repeat(file))
     with Pool() as pool:
-        realizations = list(pool.imap(get_realization, zip(get_seeds(4), repeat(N_gridpts), repeat(pos_kernel), repeat(file))))
+        realizations = list(pool.imap(get_realization, args))
 
 
     plt.figure(1)
