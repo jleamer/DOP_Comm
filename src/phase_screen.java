@@ -28,7 +28,7 @@ public class $name {
 
     model.func().create("int1", "Interpolation");
     model.func("int1").set("source", "file");
-    model.func("int1").set("filename", "$interp");
+    model.func("int1").set("filename", $interp);
     model.func("int1").set("nargs", 3);
     model.func("int1").set("fununit", new String[]{"1"});
     model.func("int1").set("argunit", new String[]{"m", "m", "m"});
@@ -68,10 +68,14 @@ public class $name {
          .set("qcc", new String[][]{{"-width/2 -1"}, {"0"}, {"0"}});
     model.component("comp1").physics("gop").feature("relg1").set("Rc", "20[m]");
     model.component("comp1").physics("gop").feature("relg1").set("Ncr", 20);
-    model.component("comp1").physics("gop").feature("relg1").set("Nphi", 50);
+    model.component("comp1").physics("gop").feature("relg1").set("Nphi", 20);
     model.component("comp1").physics("gop").feature("relg1").set("L0", new int[][]{{1}, {0}, {0}});
     model.component("comp1").physics("gop").feature("relg1").set("InitialPolarizationType", "PartiallyPolarized");
-    model.component("comp1").physics("gop").feature("relg1").set("P0", 0.2);
+    model.component("comp1").physics("gop").feature("relg1").set("P0", $dop);
+    model.component("comp1").physics("gop").feature("relg1").set("I0", "1000[W/m^2]");
+    model.component("comp1").physics("gop").feature("relg1").set("a10", $a10);
+    model.component("comp1").physics("gop").feature("relg1").set("a20", $a20);
+    model.component("comp1").physics("gop").feature("relg1").set("delta0", $delta0);
 
     model.study().create("std1");
     model.study("std1").create("rtrac", "RayTracing");
@@ -124,6 +128,90 @@ public class $name {
     model.result("pg2").set("looplevel", new int[]{11});
     model.result("pg2").feature("slc1").set("quickxnumber", 10);
     model.result("pg2").feature("slc1").set("resolution", "normal");
+    
+    // Create structures for getting and exporting stokes parameters
+    model.result().numerical().create("ray1", "Ray");
+    model.result().numerical().create("ray2", "Ray");
+    model.result().numerical().create("ray3", "Ray");
+    model.result().numerical().create("ray4", "Ray");
+    model.result().numerical("ray1").set("probetag", "none");
+    model.result().numerical("ray2").set("probetag", "none");
+    model.result().numerical("ray3").set("probetag", "none");
+    model.result().numerical("ray4").set("probetag", "none");
+    
+    model.result().table().create("tbl1", "Table");
+    model.result().table("tbl1").label("Ray Intensity");
+    model.result().table().create("tbl2", "Table");
+    model.result().table("tbl2").label("Ray s1");
+    model.result().table().create("tbl3", "Table");
+    model.result().table("tbl3").label("Ray s2");
+    model.result().table().create("tbl4", "Table");
+    model.result().table("tbl4").label("Ray s3");
+    
+    // Create tables for storing and exporting results
+    model.result().export().create("tbl1", "Table");
+    model.result().export().create("tbl2", "Table");
+    model.result().export().create("tbl3", "Table");
+    model.result().export().create("tbl4", "Table");
+    
+    // Prepare to store intensity values in table 2
+    model.result().numerical("ray1").label("Ray Intensity");
+    model.result().numerical("ray1").set("looplevelinput", new String[]{"manualindices"});
+    model.result().numerical("ray1").set("looplevelindices", new String[] {"1, 2701"});
+    model.result().numerical("ray1").set("table", "tbl1");
+    model.result().numerical("ray1").set("expr", "gop.I");
+    model.result().numerical("ray1").set("unit", "W/m^2");
+    model.result().numerical("ray1").set("descr", "Intensity");
+    
+    // Prepare to store normalized s1 in table 3
+    model.result().numerical("ray2").label("Ray s1");
+    model.result().numerical("ray2").set("looplevelinput", new String[]{"manualindices"});
+    model.result().numerical("ray2").set("looplevelindices", new String[]{"1, 2701"});
+    model.result().numerical("ray2").set("table", "tbl2");
+    model.result().numerical("ray2").set("expr", "gop.sn1");
+    model.result().numerical("ray2").set("descr", "Stokes parameter 1");
+    
+    // Prepare to store normalized s2 in table 4
+    model.result().numerical("ray3").label("Ray s2");
+    model.result().numerical("ray3").set("looplevelinput", new String[]{"manualindices"});
+    model.result().numerical("ray3").set("looplevelindices", new String[]{"1, 2701"});
+    model.result().numerical("ray3").set("table", "tbl3");
+    model.result().numerical("ray3").set("expr", "gop.sn2");
+    model.result().numerical("ray3").set("descr", "Stokes parameter 2");
+    
+    // Prepare to store normalized s3 in table 5
+    model.result().numerical("ray4").label("Ray s3");
+    model.result().numerical("ray4").set("looplevelinput", new String[]{"manualindices"});
+    model.result().numerical("ray4").set("looplevelindices", new String[]{"1, 2701"});
+    model.result().numerical("ray4").set("table", "tbl4");
+    model.result().numerical("ray4").set("expr", "gop.sn3");
+    model.result().numerical("ray4").set("descr", "Stokes parameter 3");
+    
+    // Store desired results in tables
+    model.result().numerical("ray1").setResult();
+    model.result().numerical("ray2").setResult();
+    model.result().numerical("ray3").setResult();
+    model.result().numerical("ray4").setResult();
+    
+    // Label export nodes
+    model.result().export("tbl1").label("Ray Intensity");
+    model.result().export("tbl1").set("table", "tbl1");
+    model.result().export("tbl1").set("filename", $int_file);
+    model.result().export("tbl2").label("Ray s1");
+    model.result().export("tbl2").set("table", "tbl2");
+    model.result().export("tbl2").set("filename", $s1_file);
+    model.result().export("tbl3").label("Ray s2");
+    model.result().export("tbl3").set("table", "tbl3");
+    model.result().export("tbl3").set("filename", $s2_file);
+    model.result().export("tbl4").label("Ray s3");
+    model.result().export("tbl4").set("table", "tbl4");
+    model.result().export("tbl4").set("filename", $s3_file);
+    
+    // Export data to tables
+    model.result().export("tbl1").run();
+    model.result().export("tbl2").run();
+    model.result().export("tbl3").run();
+    model.result().export("tbl4").run();
 
     return model;
   }

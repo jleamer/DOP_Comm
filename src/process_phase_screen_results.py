@@ -19,22 +19,22 @@ def load_vals(directory):
     :param directory:           the directory to load from
     :return:                    an array of the the values in the file
     """
-    int_files = get_filenames(directory + "/intensity_1000")
+    int_files = get_filenames(directory + "/intensity")
     init_int = np.array([np.loadtxt(_, skiprows=5, delimiter=',')[0][1:] for _ in int_files])
     fin_int = np.array([np.loadtxt(_, skiprows=6, delimiter=',')[1:] for _ in int_files])
     intens = (init_int, fin_int)
 
-    s1_files = get_filenames(directory + "/s1_1000")
+    s1_files = get_filenames(directory + "/s1")
     init_s1 = np.array([np.loadtxt(_, skiprows=5, delimiter=',')[0][1:] for _ in s1_files])
     fin_s1 = np.array([np.loadtxt(_, skiprows=6, delimiter=',')[1:] for _ in s1_files])
     s1 = (init_s1, fin_s1)
 
-    s2_files = get_filenames(directory + "/s2_1000")
+    s2_files = get_filenames(directory + "/s2")
     init_s2 = np.array([np.loadtxt(_, skiprows=5, delimiter=',')[0][1:] for _ in s2_files])
     fin_s2 = np.array([np.loadtxt(_, skiprows=6, delimiter=',')[1:] for _ in s2_files])
     s2 = (init_s2, fin_s2)
 
-    s3_files = get_filenames(directory + "/s3_1000")
+    s3_files = get_filenames(directory + "/s3")
     init_s3 = np.array([np.loadtxt(_, skiprows=5, delimiter=',')[0][1:] for _ in s3_files])
     fin_s3 = np.array([np.loadtxt(_, skiprows=6, delimiter=',')[1:] for _ in s3_files])
     s3 = (init_s3, fin_s3)
@@ -43,7 +43,7 @@ def load_vals(directory):
 
 
 if __name__ == "__main__":
-    directory = "phase_screens/P=0.2"
+    directory = "phase_volumes/P=0.2"
     intensity, s1, s2, s3 = load_vals(directory)
     init_coll_s1 = np.array([np.nanmean(_) for _ in s1[0]])
     fin_coll_s1 = np.array([np.nanmean(_) for _ in s1[1]])

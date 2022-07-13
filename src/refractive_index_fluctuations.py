@@ -46,14 +46,14 @@ def get_realization(args):
     x = args[3]
     y = args[4]
     z = args[5]
-    file = args[6] + str(seed) + ".csv"
+    file = args[6] + "/" + str(seed) + ".csv"
 
     np.random.seed(seed)
     random_noise = np.random.uniform(low=-np.sqrt(3), high=np.sqrt(3), size=(grid_pts, grid_pts, grid_pts))
     filtered = convolve(kernel, random_noise, mode='same').real
     filtered = filtered.real * filtered.real[grid_pts // 2, grid_pts // 2, grid_pts // 2]
     data = np.vstack((x.flatten(), y.flatten(), z.flatten(), filtered.flatten()))
-    np.savetxt(file + str(seed) + ".csv", data.T, delimiter=',')
+    np.savetxt(file, data.T, delimiter=',')
     return filtered
 
 
@@ -122,7 +122,6 @@ if __name__ == '__main__':
     plt.imshow(realizations[1][N_gridpts // 2].real, origin='lower')
     plt.colorbar()
 
-    save_realization(realizations[0], 1, xx, yy, zz)
     """
     plt.figure(2)
     plt.imshow(np.mean(realizations).real, origin='lower')
