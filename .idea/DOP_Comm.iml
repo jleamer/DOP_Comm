@@ -7,6 +7,8 @@
       <excludeFolder url="file://$MODULE_DIR$/src/output_class_files" />
       <excludeFolder url="file://$MODULE_DIR$/src/output_class_files_arb_pol" />
       <excludeFolder url="file://$MODULE_DIR$/src/phase_screens" />
+      <excludeFolder url="file://$MODULE_DIR$/src/phase_volumes_arb_pol" />
+      <excludeFolder url="file://$MODULE_DIR$/src/phase_volumes" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -76,6 +76,9 @@ public class $name {
     model.component("comp1").physics("gop").feature("relg1").set("a10", $a10);
     model.component("comp1").physics("gop").feature("relg1").set("a20", $a20);
     model.component("comp1").physics("gop").feature("relg1").set("delta0", $delta0);
+    model.component("comp1").physics("gop").feature("matd1").set("ReleaseReflectedRays", "Never");
+    model.component("comp1").physics("gop").prop("MaximumSecondary").setIndex("MaximumSecondary", 0, 0);
+
 
     model.study().create("std1");
     model.study("std1").create("rtrac", "RayTracing");
